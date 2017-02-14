@@ -8,7 +8,7 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 ## Installation
 
 1. Install [Docker Engine](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/).
-2. Download the [release package](https://dummy.url/version.zip).
+2. Download the [release package](releases/ce_1.0.0b_20170214.zip).
 3. Verify the content of the package.
 	
 	```sh
