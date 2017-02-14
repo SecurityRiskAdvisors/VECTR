@@ -40,7 +40,12 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 
 The VECTR webapp is available at http://your_docker_host:8080/sra-purpletools-webui/app. Log in with the default admin credentials: user admin and password 11_ThisIsTheFirstPassword_11.  Please change your password after initial login in the user profile menu.
 
-In order to enable HTTPS please supply your tomcat instance with a valid SSL cert.
+## General
+
+* Presentation layer built on AngularJS with some Angular Material UI components
+* Support for OAuth 2.0
+* REST API powered by Apache CXF and JAX-RS
+* Support for TLS endpoints (for VECTR Community Edition you will need to obtain your own trusted certificate, the tool does not ship with an untrusted self-signed cert)
 
 ## Team
 
