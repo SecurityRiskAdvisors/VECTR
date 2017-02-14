@@ -44,7 +44,7 @@ In order to enable HTTPS please supply your tomcat instance with a valid SSL cer
 
 ## Team
 
-* Phil Wainwright - The Business Jerk
+* Phil Wainwright - Design & Requirements
 * Carl Vonderheid - Lead Programmer
 * Nick Galante - Assistant Programmer
 * Bowei Zhang - Assistant Progammer
