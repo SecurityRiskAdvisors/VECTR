@@ -38,15 +38,20 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 
 ## Usage
 
-The VECTR webapp is available at `http://your_docker_host:8080/sra-purpletools-webui/app`. 
-Log in with the default admin credentials: user `admin` and password `11_ThisIsTheFirstPassword_11`.
+The VECTR webapp is available at http://your_docker_host:8080/sra-purpletools-webui/app. Log in with the default admin credentials: user admin and password 11_ThisIsTheFirstPassword_11.  Please change your password after initial login in the user profile menu.
 
-![VECTR login screen](media/vectr_login.png)
+In order to enable HTTPS please supply your tomcat instance with a valid SSL cert.
 
 ## Team
 
-[![Security Risk Advisors](media/SRA-logo-FINAL.png)](https://securityriskadvisors.com)
+* Phil Wainwright - The Business Jerk
+* Carl Vonderheid - Lead Programmer
+* Nick Galante - Assistant Programmer
+* Bowei Zhang - Assistant Progammer
+* Doug Webster - Graphic Designer & Marketing
+
+[![Security Risk Advisors](media/SRA-logo-FINAL-small.png)](https://securityriskadvisors.com)
 
 ## License
 
-MIT © [Security Risk Advisors](https://securityriskadvisors.com)
+Please see the [EULA](./EULA.txt)
