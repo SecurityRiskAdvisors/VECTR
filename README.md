@@ -51,8 +51,8 @@ The VECTR webapp is available at http://your_docker_host:8080/sra-purpletools-we
 
 * Phil Wainwright - Design & Requirements
 * Carl Vonderheid - Lead Programmer
-* Nick Galante - Assistant Programmer
-* Bowei Zhang - Assistant Progammer
+* Bowei Zhang - Progammer
+* Nick Galante - Programmer
 * Doug Webster - Graphic Designer & Marketing
 
 [![Security Risk Advisors](media/SRA-logo-FINAL-small.png)](https://securityriskadvisors.com)
