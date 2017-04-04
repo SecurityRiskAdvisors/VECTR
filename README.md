@@ -19,7 +19,7 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 	./wars:
 	sra-oauth2-rest.war  sra-purpletools-rest.war  sra-purpletools-webui.war
 	```
-4. Run `docker compose` from the top directory where docker-compose.yml is located.
+4. Run `docker compose` from the top directory where docker-compose.yml is located. Proxy configurations might need to be added to the YAML file in order for the containers to have internet access if your environment requires proxies.
 
 	```sh
 	$ docker-compose up -d
