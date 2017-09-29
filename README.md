@@ -64,4 +64,4 @@ The VECTR webapp is available at http://your_docker_host:8080/sra-purpletools-we
 
 ## License
 
-Please see the [EULA](./VECTR\ End\ User\ License\ Agreement.pdf)
+Please see the [EULA](./VECTR%20End%20User%20License%20Agreement.pdf)
