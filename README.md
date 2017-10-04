@@ -8,7 +8,7 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 ## Installation
 
 1. Install [Docker Engine](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/).
-2. Download the [release package](https://github.com/SecurityRiskAdvisors/VECTR/releases/download/ce-1.0.0b/ce_1.0.0b_20170214.zip).
+2. Download the [release package](https://github.com/SecurityRiskAdvisors/VECTR/releases/download/ce-4.0.0/ce_4.0.0_20171004.zip).
 3. Verify the content of the package.
 	
 	```sh
@@ -19,10 +19,10 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 	./wars:
 	sra-oauth2-rest.war  sra-purpletools-rest.war  sra-purpletools-webui.war
 	```
-4. Run `docker compose` from the top directory where docker-compose.yml is located. Proxy configurations might need to be added to the YAML file in order for the containers to have internet access if your environment requires proxies.
+4. Run `docker compose` from the top directory where docker-compose.yml is located. Proxy configurations might need to be added to the YAML file in order for the containers to have internet access if your environment requires proxies. In addition to the docker-compose.yml, an environment-specific configuration file, dev.yml is included. You may define the port and volume usages for individual environments using a configuration like this.
 
 	```sh
-	$ docker-compose up -d
+	$ docker-compose -f docker-compose.yml -f dev.yml -p dev up -d
 	Creating vectr_mongo
 	Creating vectr_tomcat
 	```
