@@ -14,7 +14,7 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 	```sh
 	$ ls -R
 	.:
-	docker-compose.yml  Dockerfile  wars
+	dev.yml  docker-compose.yml  Dockerfile  wars
 	
 	./wars:
 	sra-oauth2-rest.war  sra-purpletools-rest.war  sra-purpletools-webui.war
