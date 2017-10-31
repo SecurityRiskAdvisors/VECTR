@@ -58,7 +58,7 @@ The VECTR webapp is available at http://your_docker_host:8080/sra-purpletools-we
 * Nick Galante - Programmer
 * Doug Webster - Graphic Designer & Marketing
 
-[![Security Risk Advisors](media/SRA-logo-FINAL-small.png)](https://securityriskadvisors.com)
+[![Security Risk Advisors](media/SRA-logo-primary.png)](https://securityriskadvisors.com)
 
 ## License
 
