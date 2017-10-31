@@ -1,4 +1,4 @@
-# ![VECTR](media/vectrLogo_orig.png)
+# ![VECTR](media/vectr-logo-small.png)
 
 VECTR is a tool that facilitates tracking of your red and blue team testing activities to measure detection and prevention capabilities across different attack scenarios.  VECTR provides the ability to create assessment groups, which consist of a collection of Campaigns and supporting Test Cases to simulate adversary threats.  Campaigns can be broad and span activity across the kill chain, from initial compromise to privilege escalation and lateral movement and so on, or can be a narrow in scope to focus on specific detection layers, tools, and infrastructure.  VECTR is designed to promote full transparency between offense and defense, encourage training between team members, and improve detection & prevention success rate across the environment.   
 
@@ -58,7 +58,7 @@ The VECTR webapp is available at http://your_docker_host:8080/sra-purpletools-we
 * Nick Galante - Programmer
 * Doug Webster - Graphic Designer & Marketing
 
-[![Security Risk Advisors](media/SRA-logo-primary.png)](https://securityriskadvisors.com)
+[![Security Risk Advisors](media/SRA-logo-primary-small.png)](https://securityriskadvisors.com)
 
 ## License
 
