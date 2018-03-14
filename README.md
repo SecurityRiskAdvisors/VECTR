@@ -38,7 +38,7 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 
 ## Usage
 
-The VECTR webapp is available at http://your_docker_host:8080/sra-purpletools-webui/app. Log in with the default admin credentials: user admin and password 11_ThisIsTheFirstPassword_11.  Please change your password after initial login in the user profile menu.
+The VECTR webapp is available at http://your_docker_host:8081/sra-purpletools-webui/app. Log in with the default admin credentials: user admin and password 11_ThisIsTheFirstPassword_11.  Please change your password after initial login in the user profile menu.
 
 <!-- [![Dply](https://dply.co/b.svg)](https://dply.co/b/OynYEP3G)
 *Note: Server initialization on dply.co can take up to 10 minutes* -->
