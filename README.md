@@ -62,23 +62,23 @@ So far we are not able to get Docker on Windows to work properly.  The mongo con
 3.  Install JDK
 4.  Setup Environment Variables:
 
-		-JAVA_HOME=/path/to/jdk
+		JAVA_HOME=/path/to/jdk
 
-		-MONGODB_HOME=/path/to/mongodb
+		MONGODB_HOME=/path/to/mongodb
               
 5.  Append to PATH environment variable:
 
-              PATH=...;%JAVA_HOME%\bin;%MONGODB_HOME%\bin
+		PATH=...;%JAVA_HOME%\bin;%MONGODB_HOME%\bin
               
-6.	Make sure you have C:\data\db 
+6.  Make sure you have C:\data\db 
              
-7.	Start the mongodb process.  
+7.  Start the mongodb process.  
 			  
-7.	Edit catalina.properties in TOMCAT_HOME\conf\catalina.properties. 
+7.  Edit catalina.properties in TOMCAT_HOME\conf\catalina.properties. 
 			  
 		shared.loader="${catalina.base}/app_conf" 
  
-8.	Place vectr.properties from the config/ folder in app_conf
+8.  Place vectr.properties from the config/ folder in app_conf
 
 9.  Place the wars in TOMCAT_HOME/webapps
 
@@ -97,6 +97,12 @@ The VECTR webapp is available at http://your_docker_host:8081/sra-purpletools-we
 * Support for OAuth 2.0
 * REST API powered by Apache CXF and JAX-RS
 * Support for TLS endpoints (for VECTR Community Edition you will need to obtain your own trusted certificate, the tool does not ship with an untrusted self-signed cert)
+
+## Documentation
+
+### Feature Breakdowns By Release
+
+[VECTR v4.2 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v4_2%20Feature%20Breakdown.pdf)
 
 ## Team
 
