@@ -70,16 +70,17 @@ So far we are not able to get Docker on Windows to work properly.  The mongo con
 
               PATH=...;%JAVA_HOME%\bin;%MONGODB_HOME%\bin
               
-6.  -Make sure you have C:\data\db 
+6.	Make sure you have C:\data\db 
              
-	     start the mongodb process.  
+7.	Start the mongodb process.  
 			  
 7.	Edit catalina.properties in TOMCAT_HOME\conf\catalina.properties. 
-			  shared.loader="${catalina.base}/app_conf" 
+			  
+		shared.loader="${catalina.base}/app_conf" 
  
 8.	Place vectr.properties from the config/ folder in app_conf
 
-9.  place the wars in TOMCAT_HOME/webapps
+9.  Place the wars in TOMCAT_HOME/webapps
 
 10.  Navigate to 127.0.0.1:8080/sra-purpletools-webui/app
 	
