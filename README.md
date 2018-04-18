@@ -19,24 +19,24 @@ So far we are not able to get Docker on Windows to work properly.  The mongo con
 	```sh
 	$ ls -R
 	.:
-backup  config  dev.yml  docker-compose.yml  Dockerfile  dumpfiles  migrationbackups  migrationlogs    wars 
+	backup  config  dev.yml  docker-compose.yml  Dockerfile  dumpfiles  migrationbackups  migrationlogs    wars 
 
-./backup:
+	./backup:
 
-./config:
-vectr.properties
+	./config:
+	vectr.properties
 
-./dumpfiles:
+	./dumpfiles:
 
-./migrationbackups:
+	./migrationbackups:
 
-./migrationlogs:
+	./migrationlogs:
 
-./wars:
-ROOT  sra-oauth2-rest.war  sra-purpletools-rest.war  sra-purpletools-webui.war
+	./wars:
+	ROOT  sra-oauth2-rest.war  sra-purpletools-rest.war  sra-purpletools-webui.war
 
-./wars/ROOT:
-index.jsp 
+	./wars/ROOT:
+	index.jsp 
 	```
 4. Run `docker compose` from the top directory where docker-compose.yml is located. Proxy configurations might need to be added to the YAML file in order for the containers to have internet access if your environment requires proxies. In addition to the docker-compose.yml, an environment-specific configuration file, dev.yml is included. You may define the port and volume usages for individual environments using a configuration like this.
 
@@ -61,14 +61,18 @@ index.jsp
 2.  Install Mongodb
 3.  Install JDK
 4.  Setup Environment Variables:
-              -JAVA_HOME=/path/to/jdk
-              -MONGODB_HOME=/path/to/mongodb
+
+		-JAVA_HOME=/path/to/jdk
+
+		-MONGODB_HOME=/path/to/mongodb
               
 5.  Append to PATH environment variable:
+
               PATH=...;%JAVA_HOME%\bin;%MONGODB_HOME%\bin
               
 6.  -Make sure you have C:\data\db 
-              -start the mongodb process.  
+             
+	     start the mongodb process.  
 			  
 7.	Edit catalina.properties in TOMCAT_HOME\conf\catalina.properties. 
 			  shared.loader="${catalina.base}/app_conf" 
