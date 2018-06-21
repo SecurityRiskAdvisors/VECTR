@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.3.1] - 2018-06-22
+### Added
+- No new features
+
+### Changed
+- Modified docker yaml config files to look in current working directory rather than /opt/vectr
+
+## [4.3.0] - 2018-05-14
+### Added
+- Included sample data sets
+
+### Changed
+- back-end changes for test cases to improve performance
+
+
 ## [4.2.0] - 2018-04-18
 ### Added
 - New Database Schema Versioning based on MongoBee for data model update migrations
