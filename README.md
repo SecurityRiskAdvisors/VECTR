@@ -46,10 +46,10 @@ So far we are not able to get Docker on Windows to work properly.  The mongo con
 	Creating vectr_tomcat
 	```
 	
-	for HTTPS:
-	-put your .crt and .key under /opt/vectr/config.  If you want a self-signed, you can use openssl to generate one:
-	
-	openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj "/C=SomeCountry/ST=SomeState/L=SomeLocality/O=SomeOrg/CN=SomeCommonName" -keyout /opt/vectr/config/ssl.key -out /opt/vectr/config/ssl.crt
+	for HTTPS, put your .crt and .key under /opt/vectr/config.  If you want a self-signed, you can use openssl to generate one:
+	```sh
+	$ openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj "/C=SomeCountry/ST=SomeState/L=SomeLocality/O=SomeOrg/CN=SomeCommonName" -keyout /opt/vectr/config/ssl.key -out /opt/vectr/config/ssl.crt
+	```
 	
 	once your .crt and .key are generated, you can run the devSsl.yml environment file:
 	```sh
