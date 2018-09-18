@@ -38,13 +38,26 @@ So far we are not able to get Docker on Windows to work properly.  The mongo con
 	./wars/ROOT:
 	index.jsp 
 	```
-4. Run `docker compose` from the top directory where docker-compose.yml is located. Proxy configurations might need to be added to the YAML file in order for the containers to have internet access if your environment requires proxies. In addition to the docker-compose.yml, an environment-specific configuration file, dev.yml is included. You may define the port and volume usages for individual environments using a configuration like this.
-
+4. Run `docker compose` from the top directory where docker-compose.yml is located. Proxy configurations might need to be added to the YAML file in order for the containers to have internet access if your environment requires proxies. In addition to the docker-compose.yml, two environment-specific configuration files, dev.yml (for http) and devSsl.yml (https) are included. You may define the port and volume usages for individual environments using a configuration like this.  
+	for HTTP:
 	```sh
 	$ sudo docker-compose -f docker-compose.yml -f dev.yml -p dev up -d
 	Creating vectr_mongo
 	Creating vectr_tomcat
 	```
+	
+	for HTTPS:
+	-put your .crt and .key under /opt/vectr/config.  If you want a self-signed, you can use openssl to generate one:
+	
+	openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj "/C=SomeCountry/ST=SomeState/L=SomeLocality/O=SomeOrg/CN=SomeCommonName" -keyout /opt/vectr/config/ssl.key -out /opt/vectr/config/ssl.crt
+	
+	once your .crt and .key are generated, you can run the devSsl.yml environment file:
+	```sh
+	$ sudo docker-compose -f docker-compose.yml -f devSsl.yml -p dev up -d
+	Creating vectr_mongo
+	Creating vectr_tomcat
+	```
+	
 	
 5. Check the status of the containers with `docker ps`.
 
