@@ -38,7 +38,9 @@ So far we are not able to get Docker on Windows to work properly.  The mongo con
 	./wars/ROOT:
 	index.jsp 
 	```
-4. Run `docker compose` from the top directory where docker-compose.yml is located. Proxy configurations might need to be added to the YAML file in order for the containers to have internet access if your environment requires proxies. In addition to the docker-compose.yml, two environment-specific configuration files, dev.yml (for http) and devSsl.yml (https) are included. You may define the port and volume usages for individual environments using a configuration like this.  
+4. Extract the release package to */opt/vectr* or copy all extracted files to this folder.  **WARNING: You will get errors if vectr.properties is not under */opt/vectr/config* and all *\*.war* files are not under */opt/vectr/wars* **
+	
+5. Run `docker compose` from the top directory where docker-compose.yml is located. Proxy configurations might need to be added to the YAML file in order for the containers to have internet access if your environment requires proxies. In addition to the docker-compose.yml, two environment-specific configuration files, dev.yml (for http) and devSsl.yml (https) are included. You may define the port and volume usages for individual environments using a configuration like this.  
 	for HTTP:
 	```sh
 	$ sudo docker-compose -f docker-compose.yml -f dev.yml -p dev up -d
@@ -59,7 +61,7 @@ So far we are not able to get Docker on Windows to work properly.  The mongo con
 	```
 	
 	
-5. Check the status of the containers with `docker ps`.
+6. Check the status of the containers with `docker ps`.
 
 	```sh
 	$ sudo docker ps
