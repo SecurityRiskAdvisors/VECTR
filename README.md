@@ -101,6 +101,7 @@ LEAD PROGRAMMERS:
 PROGRAMMERS:
 * Daniel Hong
 * Andrew Scott
+* Patrick Hislop
 * Nick Galante
 
 DESIGN & REQUIREMENTS:
