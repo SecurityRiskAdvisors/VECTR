@@ -114,3 +114,5 @@ GRAPHIC DESIGN & MARKETING:
 ## License
 
 Please see the [EULA](./VECTR%20End%20User%20License%20Agreement.pdf)
+Atomic Red [LICENSE](https://github.com/redcanaryco/atomic-red-team/blob/master/LICENSE.txt)
+
