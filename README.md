@@ -10,7 +10,7 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 
 So far we are not able to get Docker on Windows to work properly.  The mongo container will not persist data to docker-compose volumes.  This may be related to how mongo saves data in addition to how file permissions work for the Windows base Docker VM.  We've seen discussion about named volumes working, but we haven't investigated this yet.
 
-## Linux Docker Installation (Preferred)
+## Linux Docker Installation (Manual)
 
 1. Install [Docker Engine](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/).
 2. Download the [release package](https://github.com/SecurityRiskAdvisors/VECTR/releases/latest).
@@ -70,34 +70,6 @@ So far we are not able to get Docker on Windows to work properly.  The mongo con
 	dcf593d84e1e        mongo:3.2.3                   "/entrypoint.sh mongo"   5 seconds ago       Up 4 seconds        0.0.0.0:27017->27017/tcp                         vectr_mongo
 	```
 
-## Windows Bare Metal Installation	
-
-1.  Install Tomcat 
-2.  Install Mongodb
-3.  Install JDK
-4.  Setup Environment Variables:
-
-		JAVA_HOME=/path/to/jdk
-
-		MONGODB_HOME=/path/to/mongodb
-              
-5.  Append to PATH environment variable:
-
-		PATH=...;%JAVA_HOME%\bin;%MONGODB_HOME%\bin
-              
-6.  Make sure you have C:\data\db 
-             
-7.  Start the mongodb process.  
-			  
-7.  Edit catalina.properties in TOMCAT_HOME\conf\catalina.properties. 
-			  
-		shared.loader="${catalina.base}/app_conf" 
- 
-8.  Place vectr.properties from the config/ folder in app_conf
-
-9.  Place the wars in TOMCAT_HOME/webapps
-
-10.  Navigate to 127.0.0.1:8080/sra-purpletools-webui/app
 	
 ## Usage
 
