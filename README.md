@@ -19,7 +19,7 @@ So far we are not able to get Docker on Windows to work properly.  The mongo con
 	```sh
 	$ ls -R
 	.:
-	backup  config  dev.yml  docker-compose.yml  Dockerfile  dumpfiles  migrationbackups  migrationlogs    wars 
+	backup  config  devSsl.yml  dev.yml  docker-compose.yml  Dockerfile  dumpfiles  migrationbackups  migrationlogs    wars 
 
 	./backup:
 
@@ -117,7 +117,7 @@ The VECTR webapp is available at http://your_docker_host:8081, or https://your_d
 
 ### Feature Breakdowns By Release
 
-[VECTR v4.4.1 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v4_4_1%20Feature%20Breakdown.pdf)
+[VECTR v5.0.0 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v5_0_0%20Feature%20Breakdown.pdf)
 
 ## Team
 LEAD PROGRAMMERS:
@@ -126,6 +126,7 @@ LEAD PROGRAMMERS:
 
 PROGRAMMERS:
 * Daniel Hong
+* Andrew Scott
 * Nick Galante
 
 DESIGN & REQUIREMENTS:
