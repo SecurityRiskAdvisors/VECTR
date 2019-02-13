@@ -6,9 +6,8 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 
 ## Environment Notes
 
-### Docker Windows
-
-So far we are not able to get Docker on Windows to work properly.  The mongo container will not persist data to docker-compose volumes.  This may be related to how mongo saves data in addition to how file permissions work for the Windows base Docker VM.  We've seen discussion about named volumes working, but we haven't investigated this yet.
+## Installation Scripts (Preferred)
+See the [wiki](https://github.com/SecurityRiskAdvisors/VECTR/wiki/Installation) for complete documentation
 
 ## Linux Docker Installation (Manual)
 
@@ -69,6 +68,9 @@ So far we are not able to get Docker on Windows to work properly.  The mongo con
 	d7a87f88bb71        vectr_tomcat:latest           "catalina.sh run"        4 seconds ago       Up 2 seconds        0.0.0.0:8080->8080/tcp                           vectr_tomcat
 	dcf593d84e1e        mongo:3.2.3                   "/entrypoint.sh mongo"   5 seconds ago       Up 4 seconds        0.0.0.0:27017->27017/tcp                         vectr_mongo
 	```
+### Docker Windows
+
+So far we are not able to get Docker on Windows to work properly.  The mongo container will not persist data to docker-compose volumes.  This may be related to how mongo saves data in addition to how file permissions work for the Windows base Docker VM.  We've seen discussion about named volumes working, but we haven't investigated this yet.
 
 	
 ## Usage
