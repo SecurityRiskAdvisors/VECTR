@@ -12,7 +12,7 @@
 # 4. Possible installation logs
 # -----------------------------------------------------------------------------------------
 
-INSTALLER_VERSION=1
+INSTALLER_VERSION=2
 
 if [ "$(id -u)" != "0" ]; then
 	echo "Exiting... setup must be run as sudo/root.  Please run sudo ./vectr-install.sh."
@@ -91,13 +91,13 @@ if [ "$OFFLINE" = false ] && [ "$IGNORE" = false ] ; then
         echo "WARNING!!! Version check against https://github.com/SecurityRiskAdvisors/VECTR failed. Please manually check the repo to make sure your installation scripts are up to date. "
         read -p "Do you wish to continue? [y/N]: " VER_OUT_OF_DATE_CONTINUE
         VER_OUT_OF_DATE_CONTINUE=${VER_OUT_OF_DATE_CONTINUE:-"N"}
-        if [ "$VER_OUT_OF_DATE_CONTINUE" != "y" ] && [ "$VER_OUT_OF_DATE_CONTINUE" != "Y" ]; then 
+        if [ "$VER_OUT_OF_DATE_CONTINUE" != "y" ] && [ "$VER_OUT_OF_DATE_CONTINUE" != "Y" ]; then
             SCRIPTEXIT
             exit 0
         fi
 
         echo ""
-    elif [ "$WEB_INSTALLER_VER" -gt "$INSTALLER_VERSION" ]; then 
+    elif [ "$WEB_INSTALLER_VER" -gt "$INSTALLER_VERSION" ]; then
         echo "Installer out of date. Please download .sh scripts from https://github.com/SecurityRiskAdvisors/VECTR into your vectr download directory replacing existing ones."
         SCRIPTEXIT
         exit 1
@@ -107,15 +107,14 @@ fi
 
 ## CENTOS style first, then Ubuntu/Mint
 
-RUN_USER="$(who am i | awk '{print $1}')"
+RUN_USER="$(who am i | awk 'NR==1{print $1}')"
 if [ -z "$RUN_USER" ]; then
-    RUN_USER="$(who | awk '{print $1}')"
+    RUN_USER="$(who | awk 'NR==1{print $1}')"
 fi
 
 if [ "$RUN_USER" == "root" ]; then
     RUN_USER="vectr"
 fi
-
 
 RUN_USER_HOME="$(eval echo "~$RUN_USER")"
 
@@ -141,13 +140,13 @@ if [ -z "$ENV_FILE" ]; then
 fi
 
 echo ""
-echo "It is strongly recommended you read the prompts and hit ENTER to select the default option for each.  " 
+echo "It is strongly recommended you read the prompts and hit ENTER to select the default option for each.  "
 echo "Configurability is provided for advanced self-supported installations ONLY."
 echo ""
 
 if [ -z "$ENV_FILE" ]; then
-    read -p "Enter a name for this vectr configuration [vectr-community]: " VECTR_CONFIG_NAME
-    VECTR_CONFIG_NAME=${VECTR_CONFIG_NAME:-"vectr-community"}
+    read -p "Enter a name for this vectr configuration [sravectr]: " VECTR_CONFIG_NAME
+    VECTR_CONFIG_NAME=${VECTR_CONFIG_NAME:-"sravectr"}
 else
     VECTR_OS_USER=$(getEnvVar "VECTR_OS_USER" "$ENV_FILE")
     VECTR_DEPLOY_DIR=$(getEnvVar "VECTR_DEPLOY_DIR" "$ENV_FILE")
@@ -164,6 +163,12 @@ else
 
     VECTR_TOMCAT_CONTAINER_NAME=$(getEnvVar "VECTR_TOMCAT_CONTAINER_NAME" "$ENV_FILE")
     VECTR_MONGO_CONTAINER_NAME=$(getEnvVar "VECTR_MONGO_CONTAINER_NAME" "$ENV_FILE")
+
+    # these two aren't really needed now, but for consistency...
+    VECTR_CA_KEY=$(getEnvVar "VECTR_CA_KEY" "$ENV_FILE")
+    VECTR_CA_CERT=$(getEnvVar "VECTR_CA_CERT" "$ENV_FILE")
+
+    VECTR_DATA_KEY=$(getEnvVar "VECTR_DATA_KEY" "$ENV_FILE")
 
     VECTR_CERT_COUNTRY=$(getEnvVar "VECTR_CERT_COUNTRY" "$ENV_FILE")
     VECTR_CERT_STATE=$(getEnvVar "VECTR_CERT_STATE" "$ENV_FILE")
@@ -197,20 +202,20 @@ if [ -z "$VECTR_OS_USER" ]; then
 fi
 
 if [ -z "$VECTR_DEPLOY_DIR" ]; then
-    read -p "Enter the VECTR deploy directory (this will append /app for where the vectr web app deploys) [$RUN_USER_HOME/vectr]: " VECTR_DEPLOY_DIR
-    VECTR_DEPLOY_DIR=${VECTR_DEPLOY_DIR:-"$RUN_USER_HOME/vectr"}
+    read -e -p "Enter the VECTR deploy directory (this will append /app for where the vectr web app deploys) [$RUN_USER_HOME/$VECTR_CONFIG_NAME]: " VECTR_DEPLOY_DIR
+    VECTR_DEPLOY_DIR=${VECTR_DEPLOY_DIR:-"$RUN_USER_HOME/$VECTR_CONFIG_NAME"}
     VECTR_DEPLOY_DIR=${VECTR_DEPLOY_DIR%/}
 fi
 
 if [ -z "$VECTR_DATA_DIR" ]; then
-    read -p "Enter the VECTR data directory [$VECTR_DEPLOY_DIR/data]: " VECTR_DATA_DIR
+    read -e -p "Enter the VECTR data directory [$VECTR_DEPLOY_DIR/data]: " VECTR_DATA_DIR
     VECTR_DATA_DIR=${VECTR_DATA_DIR:-"$VECTR_DEPLOY_DIR/data"}
     VECTR_DATA_DIR=${VECTR_DATA_DIR%/}
 fi
 
 if [ -z "$VECTR_HOSTNAME" ]; then
-    read -p "VECTR hostname [sravectr.internal]: " VECTR_HOSTNAME
-    VECTR_HOSTNAME=${VECTR_HOSTNAME:-"sravectr.internal"}
+    read -p "VECTR hostname [$VECTR_CONFIG_NAME.internal]: " VECTR_HOSTNAME
+    VECTR_HOSTNAME=${VECTR_HOSTNAME:-"$VECTR_CONFIG_NAME.internal"}
 fi
 
 if [ -z "$VECTR_PORT" ]; then
@@ -236,11 +241,28 @@ if [ -z "$ENV_FILE" ]; then
         read -p "VECTR docker network subnet [10.0.27.0/24]: " VECTR_NETWORK_SUBNET
         VECTR_NETWORK_SUBNET=${VECTR_NETWORK_SUBNET:-"10.0.27.0/24"}
 
-        read -p "VECTR docker network bridge name [vectr_bridge]: " VECTR_NETWORK_NAME
-        VECTR_NETWORK_NAME=${VECTR_NETWORK_NAME:-"vectr_bridge"}
+        read -p "VECTR docker network bridge name [${VECTR_CONFIG_NAME}_bridge]: " VECTR_NETWORK_NAME
+        VECTR_NETWORK_NAME=${VECTR_NETWORK_NAME:-"${VECTR_CONFIG_NAME}_bridge"}
 
         read -p "VECTR mongo port [27018]: " MONGO_PORT
         MONGO_PORT=${MONGO_PORT:-"27018"}
+
+        read -p "Use existing CA cert file? [y/N]: " USE_EXISTING_CA
+        USE_EXISTING_CA=${USE_EXISTING_CA:-"N"}
+
+        if [ "$USE_EXISTING_CA" == "Y" ] || [ "$USE_EXISTING_CA" == "y" ]; then
+            read -e -p "Existing CA cert dir [${VECTR_DEPLOY_DIR}/taxii/certs]: " TAXII_CERT_DIR
+            TAXII_CERT_DIR=${TAXII_CERT_DIR:-"${VECTR_DEPLOY_DIR}/taxii/certs"}
+            TAXII_CERT_DIR=${TAXII_CERT_DIR%/}
+
+            read -p "Existing CA cert file (must be in pem format) [vectrRootCA.pem]: " VECTR_CA_CERT
+            VECTR_CA_CERT=${VECTR_CA_CERT:-"vectrRootCA.pem"}
+
+            read -p "Existing CA key file (must be in key format) [vectrRootCA.key]: " VECTR_CA_KEY
+            VECTR_CA_KEY=${VECTR_CA_KEY:-"vectrRootCA.key"}
+
+            read -s -p "Existing CA password []: " VECTR_CA_PASS
+        fi
     fi
 fi
 
@@ -258,7 +280,7 @@ if [ -z "$VECTR_NETWORK_NAME" ]; then
     VECTR_NETWORK_NAME="vectr_bridge"
 fi
 
-# set normal defaults 
+# set normal defaults
 
 CLEANED_CONFIG_NAME=${VECTR_CONFIG_NAME//[^a-zA-Z0-9]/_}
 if [ -z "$VECTR_TOMCAT_CONTAINER_NAME" ]; then
@@ -304,8 +326,16 @@ if [ -z "$TAXII_CERT_DIR" ]; then
     TAXII_CERT_DIR=${TAXII_CERT_DIR%/}
 fi
 
+if [ -z "$VECTR_CA_CERT" ]; then
+    VECTR_CA_CERT="vectrRootCA.pem"
+fi
+
+if [ -z "$VECTR_CA_KEY" ]; then
+    VECTR_CA_KEY="vectrRootCA.key"
+fi
+
 if [ -z "$CAS_DIR" ]; then
-    CAS_DIR="$VECTR_DEPLOY_DIR/cas"
+    CAS_DIR="$VECTR_DEPLOY_DIR/app/cas"
     CAS_DIR=${CAS_DIR%/}
 fi
 
@@ -313,6 +343,9 @@ if [ -z "$VECTR_NETWORK_NAME" ]; then
     VECTR_NETWORK_NAME="vectr_bridge"
 fi
 
+if [ -z "$VECTR_DATA_KEY" ]; then
+    VECTR_DATA_KEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 24 | head -n 1)
+fi
 
 echo ""
 echo "Configuration data: "
@@ -325,6 +358,7 @@ echo "  VECTR port: $VECTR_PORT"
 echo "  VECTR docker bridge subnet: $VECTR_NETWORK_SUBNET"
 echo "  VECTR docker internal container names: $VECTR_TOMCAT_CONTAINER_NAME and $VECTR_MONGO_CONTAINER_NAME"
 echo "  VECTR Mongo DB port: $MONGO_PORT"
+echo "  CAS directory: $CAS_DIR"
 
 if [ -z "$VECTR_CRT_LOCATION" ] && [ -z "$VECTR_KEY_LOCATION" ]; then
     echo "  VECTR OpenSSL self-signed cert will be created."
@@ -375,6 +409,11 @@ VECTR_DEPLOY_DIR=$VECTR_DEPLOY_DIR
 VECTR_DATA_DIR=$VECTR_DATA_DIR
 
 TAXII_CERT_DIR=$TAXII_CERT_DIR
+VECTR_CA_CERT=$VECTR_CA_CERT
+VECTR_CA_KEY=$VECTR_CA_KEY
+
+VECTR_DATA_KEY=$VECTR_DATA_KEY
+
 CAS_DIR=$CAS_DIR
 
 VECTR_CERT_COUNTRY=$VECTR_CERT_COUNTRY
@@ -403,10 +442,19 @@ echo " Deploying VECTR installation according to configuration values selected .
 echo ""
 
 # this could get complex with more options, try to find a way to avoid eval statements
+# can we switch this to a subshell call? VAR=$(vectr-deploy.sh blah)
 if [ ! -z "$RELEASE_FILE_SPECIFIED" ]; then
-    ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME" -r "$RELEASE_FILE_SPECIFIED"    
+    if [ -z "$VECTR_CA_PASS" ]; then
+        ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME" -r "$RELEASE_FILE_SPECIFIED"
+    else
+        ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME" -r "$RELEASE_FILE_SPECIFIED" -p "$VECTR_CA_PASS"
+    fi
 else
-    ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME"   
+    if [ -z "$VECTR_CA_PASS" ]; then
+        ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME"
+    else
+        ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME"  -p "$VECTR_CA_PASS"
+    fi
 fi
 
 SCRIPTEXIT

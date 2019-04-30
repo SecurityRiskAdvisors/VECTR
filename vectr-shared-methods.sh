@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SHARED_METHODS_VER=2
+
 # shell logging functions from http://www.cubicrace.com/2016/03/efficient-logging-mechnism-in-shell.html
 SCRIPT_LOG=vectr-install.log
 touch $SCRIPT_LOG
@@ -93,7 +95,7 @@ function getJavaVersion ()
     local JAVA_VER=$(java -version 2>&1 | grep 'version' | awk '{print $3}' | grep -oE "${JAVA_VER_REGEX}" | head -1)
     # local JAVA_VER=$(printf "java version \"1.5.1\"" | grep 'version' | awk '{print $3}' | grep -oE "${JAVA_VER_REGEX}" | head -1)
 
-    if [ -z "$JAVA_VER" ] 
+    if [ -z "$JAVA_VER" ]
     then
         echo 0
     else
@@ -101,17 +103,17 @@ function getJavaVersion ()
         then
             local SPLIT_JAVA_VER_MAJOR=$(awk -F. '{print $1}' <<< "$JAVA_VER")
             local SPLIT_JAVA_VER_MINOR=$(awk -F. '{print $2}' <<< "$JAVA_VER")
-            
+
             if [ "$SPLIT_JAVA_VER_MAJOR" = "1" ]; then
                 echo "$SPLIT_JAVA_VER_MINOR"
-            else 
+            else
                 echo "$SPLIT_JAVA_VER_MAJOR"
-            fi 
-                
-        else 
+            fi
+
+        else
             local INT_REGEX='^[0-9]+$'
-            if [[ "$JAVA_VER" =~ $INT_REGEX ]]; then 
-                if [[ "$JAVA_VER" -ge 8 ]]; then 
+            if [[ "$JAVA_VER" =~ $INT_REGEX ]]; then
+                if [[ "$JAVA_VER" -ge 8 ]]; then
                     echo "$JAVA_VER"
                 else
                     # versions below 8 don't report this way
@@ -132,7 +134,7 @@ function javaOk ()
     [[ "$JAVA_VER" -ge 8 ]] && echo 1 || echo 0
 }
 
-function checkMajorMinorDockerVer () 
+function checkMajorMinorDockerVer ()
 {
     FUNCENTRY
     local MAJOR_VER="$1"
@@ -140,22 +142,22 @@ function checkMajorMinorDockerVer ()
 
     local INT_REGEX='^[0-9]+$'
     DEBUG "Evaluating Docker Major and Minor version for v$1.$2 "
-    if [[ ( "$MAJOR_VER" =~ $INT_REGEX ) && ( "$MINOR_VER" =~ $INT_REGEX ) ]]; then 
-        if [[ "$MAJOR_VER" -eq 1 ]]; then 
+    if [[ ( "$MAJOR_VER" =~ $INT_REGEX ) && ( "$MINOR_VER" =~ $INT_REGEX ) ]]; then
+        if [[ "$MAJOR_VER" -eq 1 ]]; then
             if [[ $MINOR_VER -ge 10 ]]; then
                 echo 1
             else
                 echo 0
             fi
         else
-            if [[ "$MAJOR_VER" -eq 17 ]]; then 
+            if [[ "$MAJOR_VER" -eq 17 ]]; then
                 if [[ $MINOR_VER -ge 03 ]]; then
                     echo 1
                 else
                     echo 0
                 fi
             else
-                if [[ "$MAJOR_VER" -ge 18 ]]; then 
+                if [[ "$MAJOR_VER" -ge 18 ]]; then
                     echo 1
                 else
                     echo 0
@@ -178,7 +180,7 @@ function dockerVersionOk ()
     local DOCKER_VER=$(docker -v 2>&1 | grep 'version' | awk '{print $3}' | grep -oE "${DOCKER_VER_REGEX}" | head -1)
     # local JAVA_VER=$(printf "java version \"1.5.1\"" | grep 'version' | awk '{print $3}' | grep -oE "${JAVA_VER_REGEX}" | head -1)
 
-    if [ -z "$DOCKER_VER" ] 
+    if [ -z "$DOCKER_VER" ]
     then
         ERROR "Docker version can't be parsed - possibly empty, docker not installed?"
         echo 0
@@ -187,15 +189,31 @@ function dockerVersionOk ()
         then
             local SPLIT_DOCKER_VER_MAJOR=$(awk -F. '{print $1}' <<< "$DOCKER_VER")
             local SPLIT_DOCKER_VER_MINOR=$(awk -F. '{print $2}' <<< "$DOCKER_VER")
-            
+
             local DOCKER_VER_OK=$(checkMajorMinorDockerVer "$SPLIT_DOCKER_VER_MAJOR" "$SPLIT_DOCKER_VER_MINOR")
             echo "$DOCKER_VER_OK"
-                
-        else 
+
+        else
             ERROR "Docker version not parsed properly. Installer error."
             echo 0
         fi
     fi
+    FUNCEXIT
+}
+
+function dockerContainerExists ()
+{
+    FUNCENTRY
+    local CONTAINER_NAME="$1"
+
+    if sudo docker ps -a --format '{{.Names}}' | grep -Eq "^${CONTAINER_NAME}\$"; then
+        DEBUG "Docker container ${CONTAINER_NAME} doesn't exist"
+        echo 1
+    else
+        DEBUG "Docker container ${CONTAINER_NAME} exists"
+        echo 0
+    fi
+
     FUNCEXIT
 }
 
@@ -245,14 +263,14 @@ function fileExists ()
     FUNCENTRY
     if [ -f "$1" ]; then
         echo 1
-    else 
+    else
         INFO "File $1 does not exist on disk"
         echo 0
     fi
     FUNCEXIT
 }
 
-function downloadLatestVectrRelease () 
+function downloadLatestVectrRelease ()
 {
     FUNCENTRY
     cd $3
@@ -398,30 +416,64 @@ function verifyVectrReleaseHelper ()
 function copyFilesToFolder ()
 {
     FUNCENTRY
+    INFO "Copying files from $1 to $2"
     cp -a $1/. $2/
     FUNCEXIT
 }
 
-# usage $(generateSelfSignedCert $COUNTRY $STATE $LOCALITY $ORG $HOSTNAME $DEPLOY_DIR)
-function generateSelfSignedCert ()
+function moveFilesToFolder ()
 {
     FUNCENTRY
-    local COUNTRY=$1
-    local STATE=$2
-    local LOCALITY=$3
-    local ORG=$4
-    local HOSTNAME=$5
-    local DEPLOY_DIR=$6
-    local CERT_FILENAME=$7
-
-    local CERTGEN_OUTPUT
-    CERTGEN_OUTPUT=$(openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj "/C=$COUNTRY/ST=$STATE/L=$LOCALITY/O=$ORG/CN=$HOSTNAME" -keyout $DEPLOY_DIR/config/$CERT_FILENAME.key -out $DEPLOY_DIR/config/$CERT_FILENAME.crt 2>/dev/null)
-
-    echo "$CERTGEN_OUTPUT"
+    INFO "Moving files from $1 to $2"
+    local MOVE_OUTPUT="$(mv  -v $1/* $2/)"
     FUNCEXIT
 }
 
-function verifySSLCert () 
+# usage buildSelfSignedCerts "$VECTR_OS_USER" "$ENV_VECTR_HOSTNAME" "$VECTR_APP_DIR"
+function buildSelfSignedCerts ()
+{
+    local OS_USER="$1"
+    local HOSTNAME="$2"
+    local VECTR_CERT_PASSWORD
+    local VECTR_APP_DIR="$3"
+    local CA_CERT="$4"
+    local CA_KEY="$5"
+    local CA_PASS="$6"
+
+    local CA_CERT_EXISTS=$(fileExists "$CA_CERT")
+    local CA_KEY_EXISTS=$(fileExists "$CA_KEY")
+
+    local CA_CERT_LOCATION
+
+    if [[ -z "$CA_PASS" ]]; then
+        # replace output_password for CA        = !!VECTR_PASSWORD_REPLACE!!
+        replaceValueInFile "$VECTR_APP_DIR/config/vectr-ca.cnf" "!!VECTR_PASSWORD_REPLACE!!" "$VECTR_CERT_PASSWORD"
+
+        # generate CA cert
+        local GENERATE_CA_KEY=$(openssl genrsa -out $VECTR_APP_DIR/config/vectrRootCA.key 4096 2>/dev/null)
+        local GENERATE_CA_PEM=$(openssl req -new -x509 -days 9999 -nodes -key $VECTR_APP_DIR/config/vectrRootCA.key -sha256 -out $VECTR_APP_DIR/config/vectrRootCA.pem -config $VECTR_APP_DIR/config/vectr-ca.cnf 2>/dev/null)
+
+        CA_CERT_LOCATION="$VECTR_APP_DIR/config/vectrRootCA.pem"
+        CA_KEY_LOCATION="$VECTR_APP_DIR/config/vectrRootCA.key"
+        VECTR_CERT_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)
+    else
+        VECTR_CERT_PASSWORD="$CA_PASS"
+        CA_CERT_LOCATION="$CA_CERT"
+        CA_KEY_LOCATION="$CA_KEY"
+    fi
+
+    replaceValueInFile "$VECTR_APP_DIR/config/vectr/vectr-app.cnf" "!!VECTR_HOSTNAME!!" "$HOSTNAME"
+    replaceValueInFile "$VECTR_APP_DIR/config/vectr/v3.ext" "!!VECTR_HOSTNAME!!" "$HOSTNAME"
+
+    # VECTR ssl certs, convert to PEM commented out at end
+    local GENERATE_VECTR_APP_KEY=$(openssl req -new -sha256 -nodes -out $VECTR_APP_DIR/config/vectr-app.csr -newkey rsa:4096 -keyout $VECTR_APP_DIR/config/ssl.key -config $VECTR_APP_DIR/config/vectr/vectr-app.cnf 2>/dev/null)
+    local GENERATE_VECTR_APP_CRT=$(openssl x509 -req -in $VECTR_APP_DIR/config/vectr-app.csr -CA $CA_CERT_LOCATION -CAkey $CA_KEY_LOCATION -CAcreateserial -out $VECTR_APP_DIR/config/ssl.crt -days 3650 -passin "pass:$VECTR_CERT_PASSWORD" -sha256 -extfile $VECTR_APP_DIR/config/vectr/v3.ext 2>/dev/null)
+    #openssl x509 -in $VECTR_APP_DIR/config/ssl.crt -out $VECTR_APP_DIR/config/ssl.pem -outform PEM
+
+    chown "$OS_USER" "$VECTR_APP_DIR/config" -R
+}
+
+function verifySSLCert ()
 {
     FUNCENTRY
     local KEY_RESULT
@@ -505,6 +557,7 @@ function envFileKeyEqualsValue
     FUNCEXIT
 }
 
+# the : for this is because it's generally just been for ports and volumes which end in :, probably should be changed
 function yamlConfigItemExists
 {
     FUNCENTRY
@@ -518,7 +571,50 @@ function yamlConfigItemExists
     FOUND_CONFIGITEM=$(grep -oE "$CONFIGITEM_REGEX" "$FILENAME")
 
     if [ -z "$FOUND_CONFIGITEM" ]; then
-        INFO "Yaml config item $CONFIGITEM not found in $FILENAME"
+        DEBUG "Yaml config item $CONFIGITEM not found in $FILENAME"
+        echo 0
+    else
+        DEBUG "Yaml config item $CONFIGITEM found in $FILENAME"
+        echo 1
+    fi
+    FUNCEXIT
+}
+
+function yamlSoloConfigItemExists
+{
+    FUNCENTRY
+    local FILENAME
+    FILENAME=$1
+    local CONFIGITEM
+    CONFIGITEM=$2
+
+    local CONFIGITEM_REGEX="(^\s+- $CONFIGITEM)"
+    local FOUND_CONFIGITEM
+    FOUND_CONFIGITEM=$(grep -oE "$CONFIGITEM_REGEX" "$FILENAME")
+
+    if [ -z "$FOUND_CONFIGITEM" ]; then
+        INFO "Yaml solo config item $CONFIGITEM not found in $FILENAME"
+        echo 0
+    else
+        echo 1
+    fi
+    FUNCEXIT
+}
+
+function yamlConfigCategoryExists
+{
+    FUNCENTRY
+    local FILENAME
+    FILENAME=$1
+    local CONFIG_CATEGORY
+    CONFIG_CATEGORY=$2
+
+    local CONFIG_CATEGORY_REGEX="(^\s$CONFIG_CATEGORY:)"
+    local FOUND_CONFIG_CATEGORY
+    FOUND_CONFIG_CATEGORY=$(grep -oE "$CONFIG_CATEGORY_REGEX" "$FILENAME")
+
+    if [ -z "$FOUND_CONFIG_CATEGORY" ]; then
+        INFO "Yaml config category $CONFIG_CATEGORY not found in $FILENAME"
         echo 0
     else
         echo 1
@@ -577,7 +673,7 @@ function checkHostExists
     FUNCEXIT
 }
 
-function addHost 
+function addHost
 {
     FUNCENTRY
     local HOSTS_LINE
@@ -600,7 +696,7 @@ function printStatusMark ()
     then
         printf "[ ${GREEN}\xE2\x9C\x94${SET} ] "
     else
-        printf "[ ${RED}X${SET} ] " 
+        printf "[ ${RED}X${SET} ] "
     fi
     FUNCEXIT
 }
@@ -614,8 +710,74 @@ function backupConfigFiles ()
     ZIP_OUTPUT="$(zip $VECTR_DEPLOY_DIR/backup/${CURR_TIMESTAMP}_confBackup.zip $VECTR_DEPLOY_DIR/*.yml $VECTR_DEPLOY_DIR/config/*)"
 
     DEBUG "${ZIP_OUTPUT}"
-    
+
     FUNCEXIT
 }
 
+function backupCasConfigFiles ()
+{
+    FUNCENTRY
+    local VECTR_DEPLOY_DIR=$1
+    local CAS_DEPLOY_DIR=$2
+    local CURR_TIMESTAMP="$(date +"%Y%m%d%H%M%S")"
+    INFO "backing up CAS configs to $VECTR_DEPLOY_DIR/backup/${CURR_TIMESTAMP}_casConfBackup.zip "
+    ZIP_OUTPUT="$(zip $VECTR_DEPLOY_DIR/backup/${CURR_TIMESTAMP}_casConfBackup.zip $CAS_DEPLOY_DIR/services/*.json $CAS_DEPLOY_DIR/config/*)"
 
+    DEBUG "${ZIP_OUTPUT}"
+
+    FUNCEXIT
+}
+
+function writeCasServiceJsonFile ()
+{
+    FUNCENTRY
+
+read -r -d '' SERVICETEMPLATE <<'EOF'
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "https://localhost:8081/sra-purpletools-webui/app\\?client_name=CasClient",
+  "name" : "VECTR",
+  "id" : 8081,
+  "theme" : "sra-theme",
+  "attributeReleasePolicy" : {
+    "@class" : "org.apereo.cas.services.ReturnAllAttributeReleasePolicy"
+  }
+}
+EOF
+    local VECTR_HOST=$1
+    local VECTR_PORT=$2
+    local CAS_SERVICES_DIR=$3
+    local SERVICE_FILENAME=$4
+
+    local SERVICE_DATA
+    SERVICE_DATA=$(sed "s/localhost/$VECTR_HOST/g" <<<"$SERVICETEMPLATE")
+    SERVICE_DATA=$(sed "s/8081/$VECTR_PORT/g" <<<"$SERVICE_DATA")
+
+    echo "$SERVICE_DATA" > "$CAS_SERVICES_DIR/$SERVICE_FILENAME"
+
+    FUNCEXIT
+}
+
+# replaceDockerNetworkNameWithAlias $DEFAULT_VECTR_NETWORK_NAME $ENV_VECTR_HOSTNAME $DOCKER_COMPOSE_FILENAME
+function replaceDockerNetworkNameWithAlias ()
+{
+    FUNCENTRY
+    local DOCKER_DEFAULT_NETWORK_NAME=$1
+    local VECTR_HOSTNAME=$2
+    local FILENAME=$3
+    local DOCKER_NETWORK_CONF_DATA
+
+# there has to be a better way to do this, tried with actual newlines and replacing but wasn't getting anywhere
+read -r -d '' NETWORK_TEMPLATE <<'EOF'
+      vectr_bridge:\n        aliases:\n          - !!VECTR_HOSTNAME!!
+EOF
+
+    DOCKER_NETWORK_CONF_DATA=$(sed "s/!!VECTR_HOSTNAME!!/$VECTR_HOSTNAME/g" <<<"$NETWORK_TEMPLATE")
+
+    local DOCKER_COMPOSE_WRITE_OUTPUT
+    DOCKER_COMPOSE_WRITE_OUTPUT=$(sed -i "s@- $DOCKER_DEFAULT_NETWORK_NAME@$DOCKER_NETWORK_CONF_DATA@" "$FILENAME")
+
+    echo "$DOCKER_COMPOSE_WRITE_OUTPUT"
+
+    FUNCEXIT
+}
