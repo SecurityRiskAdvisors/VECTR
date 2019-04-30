@@ -40,13 +40,6 @@ See the [wiki](https://github.com/SecurityRiskAdvisors/VECTR/wiki/Installation) 
 4. Extract the release package to */opt/vectr* or copy all extracted files to this folder.  **WARNING: You will get errors if vectr.properties is not under */opt/vectr/config* and all *\*.war* files are not under */opt/vectr/wars***
 	
 5. Run `docker compose` from the top directory where docker-compose.yml is located. Proxy configurations might need to be added to the YAML file in order for the containers to have internet access if your environment requires proxies. In addition to the docker-compose.yml, two environment-specific configuration files, dev.yml (for http) and devSsl.yml (https) are included. You may define the port and volume usages for individual environments using a configuration like this.  
-	for HTTP:
-	```sh
-	$ sudo docker-compose -f docker-compose.yml -f dev.yml -p dev up -d
-	Creating vectr_mongo
-	Creating vectr_tomcat
-	```
-	
 	for HTTPS, put your .crt and .key under /opt/vectr/config.  If you want a self-signed, you can use openssl to generate one:
 	```sh
 	$ openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj "/C=SomeCountry/ST=SomeState/L=SomeLocality/O=SomeOrg/CN=SomeCommonName" -keyout /opt/vectr/config/ssl.key -out /opt/vectr/config/ssl.crt
@@ -91,7 +84,7 @@ The VECTR webapp is available at http://your_docker_host:8081, or https://your_d
 
 ### Feature Breakdowns By Release
 
-[VECTR v5.0.0 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v5_0_0%20Feature%20Breakdown.pdf)
+[VECTR v5.0.0 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v5_1_2%20Feature%20Breakdown.pdf)
 
 ## Team
 LEAD PROGRAMMERS:
