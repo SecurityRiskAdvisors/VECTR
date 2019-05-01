@@ -12,34 +12,12 @@ See the [wiki](https://github.com/SecurityRiskAdvisors/VECTR/wiki/Installation) 
 ## Linux Docker Installation (Manual)
 
 1. Install [Docker Engine](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/).
+
 2. Download the [release package](https://github.com/SecurityRiskAdvisors/VECTR/releases/latest).
-3. Verify the content of the package.
+
+3. Extract the release package to */opt/vectr* or copy all extracted files to this folder.  **WARNING: You will get errors if vectr.properties is not under */opt/vectr/config* and all *\*.war* files are not under */opt/vectr/wars***
 	
-	```sh
-	$ ls -R
-	.:
-	backup  config  devSsl.yml  dev.yml  docker-compose.yml  Dockerfile  dumpfiles  migrationbackups  migrationlogs    wars 
-
-	./backup:
-
-	./config:
-	vectr.properties
-
-	./dumpfiles:
-
-	./migrationbackups:
-
-	./migrationlogs:
-
-	./wars:
-	ROOT  sra-oauth2-rest.war  sra-purpletools-rest.war  sra-purpletools-webui.war
-
-	./wars/ROOT:
-	index.jsp 
-	```
-4. Extract the release package to */opt/vectr* or copy all extracted files to this folder.  **WARNING: You will get errors if vectr.properties is not under */opt/vectr/config* and all *\*.war* files are not under */opt/vectr/wars***
-	
-5. Run `docker compose` from the top directory where docker-compose.yml is located. Proxy configurations might need to be added to the YAML file in order for the containers to have internet access if your environment requires proxies. In addition to the docker-compose.yml, two environment-specific configuration files, dev.yml (for http) and devSsl.yml (https) are included. You may define the port and volume usages for individual environments using a configuration like this.  
+4. Run `docker compose` from the top directory where docker-compose.yml is located. Proxy configurations might need to be added to the YAML file in order for the containers to have internet access if your environment requires proxies. In addition to the docker-compose.yml, an environment-specific configuration file, devSsl.yml (https) is included. You may define the port and volume usages for individual environments using a configuration like this.  
 	for HTTPS, put your .crt and .key under /opt/vectr/config.  If you want a self-signed, you can use openssl to generate one:
 	```sh
 	$ openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj "/C=SomeCountry/ST=SomeState/L=SomeLocality/O=SomeOrg/CN=SomeCommonName" -keyout /opt/vectr/config/ssl.key -out /opt/vectr/config/ssl.crt
@@ -53,13 +31,13 @@ See the [wiki](https://github.com/SecurityRiskAdvisors/VECTR/wiki/Installation) 
 	```
 	
 	
-6. Check the status of the containers with `docker ps`.
+5. Check the status of the containers with `docker ps`.
 
 	```sh
 	$ sudo docker ps
 	CONTAINER ID        IMAGE                         COMMAND                  CREATED             STATUS              PORTS                                            NAMES
 	d7a87f88bb71        vectr_tomcat:latest           "catalina.sh run"        4 seconds ago       Up 2 seconds        0.0.0.0:8080->8080/tcp                           vectr_tomcat
-	dcf593d84e1e        mongo:3.2.3                   "/entrypoint.sh mongo"   5 seconds ago       Up 4 seconds        0.0.0.0:27017->27017/tcp                         vectr_mongo
+	dcf593d84e1e        mongo:3.4                   "/entrypoint.sh mongo"   5 seconds ago       Up 4 seconds        0.0.0.0:27017->27017/tcp                         vectr_mongo
 	```
 ### Docker Windows
 
@@ -68,7 +46,7 @@ So far we are not able to get Docker on Windows to work properly.  The mongo con
 	
 ## Usage
 
-The VECTR webapp is available at http://your_docker_host:8081, or https://your_docker_host:8081, if you used the devSsl.yml. Log in with the default admin credentials: user admin and password 11_ThisIsTheFirstPassword_11.  Please change your password after initial login in the user profile menu.
+The VECTR webapp is available at https://your_docker_host:8081, if you used the devSsl.yml. Log in with the default admin credentials: user admin and password 11_ThisIsTheFirstPassword_11.  Please change your password after initial login in the user profile menu.
 
 <!-- [![Dply](https://dply.co/b.svg)](https://dply.co/b/OynYEP3G)
 *Note: Server initialization on dply.co can take up to 10 minutes* -->
