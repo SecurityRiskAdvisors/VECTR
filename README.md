@@ -62,7 +62,7 @@ The VECTR webapp is available at https://your_docker_host:8081, if you used the 
 
 ### Feature Breakdowns By Release
 
-[VECTR v5.1.3 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v5_1_2%20Feature%20Breakdown.pdf)
+[VECTR v5.1.3 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v5_1_3%20Feature%20Breakdown.pdf)
 
 ## Team
 LEAD PROGRAMMERS:
