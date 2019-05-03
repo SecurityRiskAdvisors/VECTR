@@ -13,6 +13,12 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 ## Installation Scripts (Preferred)
 See the [wiki](https://github.com/SecurityRiskAdvisors/VECTR/wiki/Installation) for complete documentation
 
+![WARNING](https://placehold.it/15/f03c15/000000?text=+) **WARNING FOR USERS UPGRADING FROM V5.0.\* OR EARLIER**
+
+Please read instructions carefully for [Upgrading a VECTR instance](https://github.com/SecurityRiskAdvisors/VECTR/wiki/Upgrading-an-existing-VECTR-installation)
+
+You must perform additional manual steps or you will encounter login errors.  
+
 ## Linux Docker Installation (Manual)
 
 1. Install [Docker Engine](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/).
