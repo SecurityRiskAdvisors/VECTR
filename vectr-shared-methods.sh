@@ -751,6 +751,10 @@ EOF
 
     local SERVICE_DATA
     SERVICE_DATA=$(sed "s/localhost/$VECTR_HOST/g" <<<"$SERVICETEMPLATE")
+    if [[ "$VECTR_PORT" == "443" ]]; then
+        SERVICE_DATA=$(sed "s/:8081//g" <<<"$SERVICE_DATA")
+    fi
+
     SERVICE_DATA=$(sed "s/8081/$VECTR_PORT/g" <<<"$SERVICE_DATA")
 
     echo "$SERVICE_DATA" > "$CAS_SERVICES_DIR/$SERVICE_FILENAME"
