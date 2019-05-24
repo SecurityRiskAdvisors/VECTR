@@ -58,8 +58,7 @@ So far we are not able to get Docker on Windows to work properly.  The mongo con
 
 The VECTR webapp is available at https://your_docker_host:8081, if you used the devSsl.yml. Log in with the default admin credentials: user admin and password 11_ThisIsTheFirstPassword_11.  Please change your password after initial login in the user profile menu.
 
-<!-- [![Dply](https://dply.co/b.svg)](https://dply.co/b/OynYEP3G)
-*Note: Server initialization on dply.co can take up to 10 minutes* -->
+Check out our [How-to Videos](https://github.com/SecurityRiskAdvisors/VECTR/wiki/How-To-Videos) for getting started in VECTR once you have it installed 
 
 ## General
 
