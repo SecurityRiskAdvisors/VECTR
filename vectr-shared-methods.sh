@@ -343,15 +343,17 @@ function fixDirPerms ()
 
 function verifyVectrRelease ()
 {
+    local VERIFY_TYPE=$2
+
     FUNCENTRY
     if [ ! -d "$1/backup" ]; then
 
-        ERROR "VECTR temp extract dir $1/backup folder does not exist."
+        ERROR "VECTR $VERIFY_TYPE dir $1/backup folder does not exist."
         return 1
     fi
 
     if [ ! -d "$1/config" ]; then
-        ERROR "VECTR temp extract dir $1/config folder does not exist."
+        ERROR "VECTR $VERIFY_TYPE dir $1/config folder does not exist."
         return 2
     fi
 
@@ -361,27 +363,27 @@ function verifyVectrRelease ()
     fi
 
     if [ ! -d "$1/dumpfiles" ]; then
-        ERROR "VECTR temp extract dir $1/dumpfiles folder does not exist."
+        ERROR "VECTR $VERIFY_TYPE dir $1/dumpfiles folder does not exist."
         return 4
     fi
 
     if [ ! -d "$1/migrationbackups" ]; then
-        ERROR "VECTR temp extract dir $1/migrationbackups folder does not exist."
+        ERROR "VECTR $VERIFY_TYPE dir $1/migrationbackups folder does not exist."
         return 5
     fi
 
     if [ ! -d "$1/migrationlogs" ]; then
-        ERROR "VECTR temp extract dir $1/migrationlogs folder does not exist."
+        ERROR "VECTR $VERIFY_TYPE dir $1/migrationlogs folder does not exist."
         return 6
     fi
 
     if [ ! -d "$1/wars" ]; then
-        ERROR "VECTR temp extract dir $1/wars folder does not exist."
+        ERROR "VECTR $VERIFY_TYPE dir $1/wars folder does not exist."
         return 7
     fi
 
     if [ ! -d "$1/wars/ROOT" ]; then
-        ERROR "ERROR: VECTR temp extract dir $1/wars/ROOT folder does not exist."
+        ERROR "ERROR: VECTR $VERIFY_TYPE dir $1/wars/ROOT folder does not exist."
         return 8
     fi
 
@@ -405,7 +407,8 @@ function verifyVectrRelease ()
 function verifyVectrReleaseHelper ()
 {
     FUNCENTRY
-    if verifyVectrRelease "$1"; then
+    local VERIFY_TYPE=${2:-"temp extract"}
+    if verifyVectrRelease "$1" "$VERIFY_TYPE"; then
         echo 1
     else
         echo 0
@@ -701,6 +704,38 @@ function printStatusMark ()
     FUNCEXIT
 }
 
+function backupExistingVectr ()
+{
+    FUNCENTRY
+    local VECTR_APP_DIR=$1
+    local VECTR_DATA_DIR=$2
+    local VECTR_BACKUP_DIR=$3
+
+    local CURR_TIMESTAMP="$(date +"%Y%m%d%H%M%S")"
+    local VECTR_BACKUP_INSTANCE_DIR="${CURR_TIMESTAMP}_vectrBackup"
+    local VECTR_BACKUP_INSTANCE_PATH="$VECTR_BACKUP_DIR/$VECTR_BACKUP_INSTANCE_DIR"
+
+    local VECTR_BACKUP_DIR_EXISTS=$(dirExists "$VECTR_BACKUP_INSTANCE_PATH")
+    if [ "$VECTR_BACKUP_DIR_EXISTS" -ne 1 ]; then
+    local VECTR_BACKUP_DIR_EXISTS=$(dirExists "$VECTR_BACKUP_INSTANCE_PATH")
+        INFO "making backup directories in $VECTR_BACKUP_INSTANCE_DIR"
+        local MAKE_VECTR_BACKUP_APP_DIR=$(makeDir "$VECTR_BACKUP_INSTANCE_PATH/app")
+        local MAKE_VECTR_BACKUP_DATA_DIR=$(makeDir "$VECTR_BACKUP_INSTANCE_PATH/data")
+    fi
+
+    INFO "backing up existing VECTR instance to $VECTR_BACKUP_INSTANCE_DIR"
+
+    local BACKUP_MOVE_APP_OUTPUT=$(moveFilesToFolder "$VECTR_APP_DIR" "$VECTR_BACKUP_INSTANCE_PATH/app")
+    local BACKUP_MOVE_DATA_OUTPUT=$(moveFilesToFolder "$VECTR_DATA_DIR" "$VECTR_BACKUP_INSTANCE_PATH/data")
+
+    DEBUG "${BACKUP_MOVE_APP_OUTPUT}"
+    DEBUG "${BACKUP_MOVE_DATA_OUTPUT}"
+
+    echo "$VECTR_BACKUP_INSTANCE_DIR"
+
+    FUNCEXIT
+}
+
 function backupConfigFiles ()
 {
     FUNCENTRY
@@ -708,6 +743,19 @@ function backupConfigFiles ()
     local CURR_TIMESTAMP="$(date +"%Y%m%d%H%M%S")"
     INFO "backing up configs to $VECTR_DEPLOY_DIR/backup/${CURR_TIMESTAMP}_confBackup.zip "
     ZIP_OUTPUT="$(zip $VECTR_DEPLOY_DIR/backup/${CURR_TIMESTAMP}_confBackup.zip $VECTR_DEPLOY_DIR/*.yml $VECTR_DEPLOY_DIR/config/*)"
+
+    DEBUG "${ZIP_OUTPUT}"
+
+    FUNCEXIT
+}
+
+function zipUpFolder ()
+{
+    FUNCENTRY
+    local BACKUP_PATH=$1
+    local BACKUP_ZIP_TARGET=$2
+    INFO "zipping up backup path $BACKUP_PATH"
+    ZIP_OUTPUT="$(zip -r $BACKUP_ZIP_TARGET $BACKUP_PATH/*)"
 
     DEBUG "${ZIP_OUTPUT}"
 

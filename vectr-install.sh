@@ -12,7 +12,7 @@
 # 4. Possible installation logs
 # -----------------------------------------------------------------------------------------
 
-INSTALLER_VERSION=2
+INSTALLER_VERSION=3
 
 if [ "$(id -u)" != "0" ]; then
 	echo "Exiting... setup must be run as sudo/root.  Please run sudo ./vectr-install.sh."
@@ -151,6 +151,8 @@ else
     VECTR_OS_USER=$(getEnvVar "VECTR_OS_USER" "$ENV_FILE")
     VECTR_DEPLOY_DIR=$(getEnvVar "VECTR_DEPLOY_DIR" "$ENV_FILE")
     VECTR_DEPLOY_DIR=${VECTR_DEPLOY_DIR%/}
+    VECTR_BACKUP_DIR=$(getEnvVar "VECTR_BACKUP_DIR" "$ENV_FILE")
+    VECTR_BACKUP_DIR=${VECTR_BACKUP_DIR%/}
     VECTR_DATA_DIR=$(getEnvVar "VECTR_DATA_DIR" "$ENV_FILE")
     VECTR_DATA_DIR=${VECTR_DATA_DIR%/}
     VECTR_HOSTNAME=$(getEnvVar "VECTR_HOSTNAME" "$ENV_FILE")
@@ -211,6 +213,11 @@ if [ -z "$VECTR_DATA_DIR" ]; then
     read -e -p "Enter the VECTR data directory [$VECTR_DEPLOY_DIR/data]: " VECTR_DATA_DIR
     VECTR_DATA_DIR=${VECTR_DATA_DIR:-"$VECTR_DEPLOY_DIR/data"}
     VECTR_DATA_DIR=${VECTR_DATA_DIR%/}
+fi
+
+if [ -z "$VECTR_BACKUP_DIR" ]; then
+    VECTR_BACKUP_DIR=${VECTR_BACKUP_DIR:-"${VECTR_DEPLOY_DIR}/backup"}
+    VECTR_BACKUP_DIR=${VECTR_BACKUP_DIR%/}
 fi
 
 if [ -z "$VECTR_HOSTNAME" ]; then
@@ -407,6 +414,7 @@ VECTR_SSL_KEY=$VECTR_KEY_LOCATION
 
 VECTR_DEPLOY_DIR=$VECTR_DEPLOY_DIR
 VECTR_DATA_DIR=$VECTR_DATA_DIR
+VECTR_BACKUP_DIR=$VECTR_BACKUP_DIR
 
 TAXII_CERT_DIR=$TAXII_CERT_DIR
 VECTR_CA_CERT=$VECTR_CA_CERT
@@ -445,15 +453,15 @@ echo ""
 # can we switch this to a subshell call? VAR=$(vectr-deploy.sh blah)
 if [ ! -z "$RELEASE_FILE_SPECIFIED" ]; then
     if [ -z "$VECTR_CA_PASS" ]; then
-        ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME" -r "$RELEASE_FILE_SPECIFIED"
+        vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME" -r "$RELEASE_FILE_SPECIFIED"
     else
-        ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME" -r "$RELEASE_FILE_SPECIFIED" -p "$VECTR_CA_PASS"
+        vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME" -r "$RELEASE_FILE_SPECIFIED" -p "$VECTR_CA_PASS"
     fi
 else
     if [ -z "$VECTR_CA_PASS" ]; then
-        ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME"
+        vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME"
     else
-        ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME"  -p "$VECTR_CA_PASS"
+        vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME"  -p "$VECTR_CA_PASS"
     fi
 fi
 

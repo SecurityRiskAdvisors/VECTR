@@ -71,6 +71,8 @@ ENV_VECTR_DEPLOY_DIR=$(getEnvVar "VECTR_DEPLOY_DIR" "$ENV_FILE")
 
 VECTR_APP_DIR="$ENV_VECTR_DEPLOY_DIR/app"
 
+ENV_VECTR_BACKUP_DIR=$(getEnvVar "VECTR_BACKUP_DIR" "$ENV_FILE")
+
 ENV_VECTR_DATA_DIR=$(getEnvVar "VECTR_DATA_DIR" "$ENV_FILE")
 ENV_VECTR_OS_USER=$(getEnvVar "VECTR_OS_USER" "$ENV_FILE")
 
@@ -295,10 +297,9 @@ function deployVectr ()
     printf " VECTR release zip name found for comparison\n"
 
     # -------------------------------------------------------------------------------------------
-    # Step 10: Check to see if a VECTR vesrion was previously installed or downloaded, download if doesn't exist or not up to date
+    # Step 10: Check to see if a VECTR version was previously installed or downloaded, download if doesn't exist or not up to date
     # -------------------------------------------------------------------------------------------
     # @TODO - This logic can be simplified at a later date
-
 
     local VECTR_DOWNLOADED_VER_OK=0
     local VECTR_DOWNLOADED_NEW=0
@@ -306,19 +307,32 @@ function deployVectr ()
     if [ "$OFFLINE" != true ]; then
         if [ ! -z "$ENV_VECTR_INSTALLED_VERSION" ]; then
             if [ $VECTR_RELEASE_ZIP_NAME != "$ENV_VECTR_INSTALLED_VERSION" ]; then
-                # This is the upgrade code path
-                downloadLatestVectrRelease $ENV_VECTR_OS_USER $VECTR_RELEASE_FILE_URL $ENV_VECTR_DOWNLOAD_TEMP $RUNNING_DIR
+                local VECTR_RELEASE_FILE_EXISTS=$(fileExists "$ENV_VECTR_DOWNLOAD_TEMP/$VECTR_RELEASE_ZIP_NAME")
+                if [ "$VECTR_RELEASE_FILE_EXISTS" -ne 1 ]
+                then
+                    # This is the upgrade code path
+                    downloadLatestVectrRelease $ENV_VECTR_OS_USER $VECTR_RELEASE_FILE_URL $ENV_VECTR_DOWNLOAD_TEMP $RUNNING_DIR
 
-                local VECTR_RELEASE_FILE_DOWNLOADED=$(fileExists "$ENV_VECTR_DOWNLOAD_TEMP/$VECTR_RELEASE_ZIP_NAME" )
-                printStatusMark "$VECTR_RELEASE_FILE_DOWNLOADED"
-                printf " VECTR release zip downloaded to temporary download dir for upgrade\n"
-                local VECTR_DOWNLOADED_VER_OK="$VECTR_RELEASE_FILE_DOWNLOADED"
-                local VECTR_DOWNLOADED_NEW="$VECTR_RELEASE_FILE_DOWNLOADED"
-
+                    local VECTR_RELEASE_FILE_DOWNLOADED=$(fileExists "$ENV_VECTR_DOWNLOAD_TEMP/$VECTR_RELEASE_ZIP_NAME" )
+                    printStatusMark "$VECTR_RELEASE_FILE_DOWNLOADED"
+                    printf " VECTR release zip downloaded to temporary download dir for upgrade\n"
+                    local VECTR_DOWNLOADED_VER_OK="$VECTR_RELEASE_FILE_DOWNLOADED"
+                    local VECTR_DOWNLOADED_NEW="$VECTR_RELEASE_FILE_DOWNLOADED"
+                else
+                    printStatusMark 1
+                    printf " VECTR release zip already exists, using that\n"
+                    local VECTR_DOWNLOADED_VER_OK=1
+                fi
             else
                 # current version of zip exists, continue
                 printStatusMark 1
                 printf " VECTR release in temporary download dir is current\n"
+
+                echo "Exiting... no need to upgrade at this time. This installation is at the current VECTR version."
+                echo ""
+                SCRIPTEXIT
+                exit 0
+
                 local VECTR_DOWNLOADED_VER_OK=1
             fi
         else
@@ -396,6 +410,23 @@ function deployVectr ()
 
     checkContinueDeployment "$VECTR_VERIFY_RELEASE"
 
+    # -------------------------------------------------------------------------------------------
+    # Step 13: Backup existing VECTR installation
+    # -------------------------------------------------------------------------------------------
+
+    # if at least config folder exists let's backup
+    VECTR_RELEASE_EXISTS=$(dirExists "$VECTR_APP_DIR/config")
+    local VECTR_BACKUP_INSTANCE_DIR=""
+    if [ $VECTR_RELEASE_EXISTS -eq 1 ]; then
+        local VECTR_BACKUP_INSTANCE_DIR=$(backupExistingVectr "$VECTR_APP_DIR" "$ENV_VECTR_DATA_DIR" "$ENV_VECTR_BACKUP_DIR")
+
+        local VECTR_VERIFY_APP_BACKUP=$(verifyVectrReleaseHelper "$ENV_VECTR_BACKUP_DIR/$VECTR_BACKUP_INSTANCE_DIR/app")
+
+        printStatusMark "$VECTR_VERIFY_APP_BACKUP"
+        printf " Verify existing VECTR instance backed up\n"
+        checkContinueDeployment "$VECTR_VERIFY_APP_BACKUP"
+    fi
+
 
     # -------------------------------------------------------------------------------------------
     # Step 13: Copy extracted VECTR release files to VECTR deploy directory if it's newly downloaded or nothing exists in there
@@ -403,17 +434,6 @@ function deployVectr ()
     local VECTR_VERIFY_DEPLOY=$(verifyVectrReleaseHelper "$VECTR_APP_DIR")
 
     if [ "$VECTR_DOWNLOADED_NEW" -eq 1 ] || [ "$VECTR_VERIFY_DEPLOY" -ne 1 ]; then
-        # if at least config folder exists let's backup
-        VECTR_RELEASE_EXISTS=$(dirExists "$VECTR_APP_DIR/config")
-        if [ $VECTR_RELEASE_EXISTS -eq 1 ]; then
-            local ZIP_BACKUP_RES=$(backupConfigFiles "$VECTR_APP_DIR")
-        fi
-
-        local CAS_CONFIGS_ALREADY_EXIST=$(dirExists "$ENV_CAS_DIR/config")
-        if [ $CAS_CONFIGS_ALREADY_EXIST -eq 1 ]; then
-            local CAS_ZIP_BACKUP_RES=$(backupCasConfigFiles "$ENV_VECTR_DEPLOY_DIR" "$ENV_CAS_DIR")
-        fi
-
         local COPIED_RELEASE_FILES=$(copyFilesToFolder "$ENV_VECTR_DOWNLOAD_TEMP/$VECTR_RELEASE_FOLDER_NAME" "$VECTR_APP_DIR")
         local VECTR_FIX_COPIED_RELEASE_PERMS=$(fixDirPerms "$ENV_VECTR_OS_USER" "$VECTR_APP_DIR")
 
@@ -478,8 +498,29 @@ function deployVectr ()
         KEY_FILENAME=$(basename "$ENV_VECTR_SSL_KEY")
 
         if [ ! -f "$VECTR_APP_DIR/config/$CRT_FILENAME" ] || [ ! -f "$VECTR_APP_DIR/config/$KEY_FILENAME" ]; then
-            cp "$ENV_VECTR_SSL_CRT" "$VECTR_APP_DIR/config/$CRT_FILENAME"
-            cp "$ENV_VECTR_SSL_KEY" "$VECTR_APP_DIR/config/$KEY_FILENAME"
+
+            local ENV_VECTR_SSL_CRT_EXISTS=$(fileExists "$ENV_VECTR_SSL_CRT")
+            local ENV_VECTR_SSL_KEY_EXISTS=$(fileExists "$ENV_VECTR_SSL_KEY")
+
+            if [ "$ENV_VECTR_SSL_CRT_EXISTS" -eq 1 ] && [ $ENV_VECTR_SSL_KEY_EXISTS -eq 1 ]; then
+                # copy certs from ENV location to VECTR app config directory
+                cp "$ENV_VECTR_SSL_CRT" "$VECTR_APP_DIR/config/$CRT_FILENAME"
+                cp "$ENV_VECTR_SSL_KEY" "$VECTR_APP_DIR/config/$KEY_FILENAME"
+            else
+                local BACKUP_CRT_FILE_PATH="$ENV_VECTR_BACKUP_DIR/$VECTR_BACKUP_INSTANCE_DIR/app/config/$CRT_FILENAME"
+                local BACKUP_KEY_FILE_PATH="$ENV_VECTR_BACKUP_DIR/$VECTR_BACKUP_INSTANCE_DIR/app/config/$KEY_FILENAME"
+
+                local BACKUP_CRT_FILE_EXISTS=$(fileExists "$BACKUP_CRT_FILE_PATH")
+                local BACKUP_KEY_FILE_EXISTS=$(fileExists "$BACKUP_KEY_FILE_PATH")
+                if [ $BACKUP_CRT_FILE_EXISTS -eq 1 ] && [ $BACKUP_KEY_FILE_EXISTS -eq 1 ]; then
+                    cp "$BACKUP_CRT_FILE_PATH" "$VECTR_APP_DIR/config/$CRT_FILENAME"
+                    cp "$BACKUP_KEY_FILE_PATH" "$VECTR_APP_DIR/config/$KEY_FILENAME"
+                else
+                    # hard failure condition
+                    echo " Backup error - can't find certificate files, can't continue."
+                    checkContinueDeployment 0
+                fi
+            fi
 
             printStatusMark 1
             printf " Attempting to use existing SSL certs specified, moving to VECTR config\n"
@@ -686,7 +727,7 @@ function deployVectr ()
     # Step 19: Verify some VECTR configuration changes made by installer
     # -------------------------------------------------------------------------------------------
 
-    local COMPOSE_DEPLOY_DIRS_ARR=("wars" "config" "backup" "migrationlogs" "migrationbackups" "tools" "uploads" "static")
+    local COMPOSE_DEPLOY_DIRS_ARR=("wars" "config" "backup" "migrationlogs" "migrationbackups" "tools"  )
 
     local COMPOSE_CONFIG_ITEM_EXISTS_RES
     local COMPOSE_CONFIG_ITEMS_EXIST=1
@@ -699,7 +740,7 @@ function deployVectr ()
     done
 
     # TAXII/CAS future items
-    # DEV NOTE - This seems to cause the mose issues with older versions, not sure it's necessary yet
+    # DEV NOTE - This seems to cause the most issues with older versions, not sure it's necessary yet
     #local COMPOSE_TAXII_CERT_EXISTS_RES="$(yamlConfigItemExists "$VECTR_APP_DIR/$DEPLOY_COMPOSE_YAML_FILE_PATH" "$ENV_TAXII_CERT_DIR/")"
 
     local COMPOSE_CAS_DIR_EXISTS="$(yamlConfigItemExists "$VECTR_APP_DIR/$DEPLOY_COMPOSE_YAML_FILE_PATH" "$ENV_CAS_DIR/")"
@@ -926,7 +967,32 @@ function deployVectr ()
     fi
 
     # -------------------------------------------------------------------------------------------
-    # Step 27: Edit /etc/hosts to add hostname and 127.0.0.1 if doesn't exist
+    # Step 27: Copy over mongo data backup if this was an in place upgrade
+    # -------------------------------------------------------------------------------------------
+    
+
+    if [ ! -z "$VECTR_BACKUP_INSTANCE_DIR" ]; then
+        local VECTR_DATA_BACKUP_EXISTS=$(dirExists "$ENV_VECTR_BACKUP_DIR/$VECTR_BACKUP_INSTANCE_DIR")
+
+        if [ "$VECTR_DATA_BACKUP_EXISTS" -eq 1 ]; then
+            local COPY_VECTR_BACKUP_DATA=$(copyFilesToFolder "$ENV_VECTR_BACKUP_DIR/$VECTR_BACKUP_INSTANCE_DIR/data" "$ENV_VECTR_DATA_DIR" )
+        fi
+    fi
+
+    # -------------------------------------------------------------------------------------------
+    # Step 28: Zip up backup of VECTR if exists
+    # -------------------------------------------------------------------------------------------
+
+    if [ ! -z "$VECTR_BACKUP_INSTANCE_DIR" ]; then
+        local VECTR_DATA_BACKUP_EXISTS=$(dirExists "$ENV_VECTR_BACKUP_DIR/$VECTR_BACKUP_INSTANCE_DIR")
+
+        if [ "$VECTR_DATA_BACKUP_EXISTS" -eq 1 ]; then
+            local ZIP_BACKUP_FOR_UPGRADE=$(zipUpFolder "$ENV_VECTR_BACKUP_DIR/$VECTR_BACKUP_INSTANCE_DIR" "$ENV_VECTR_BACKUP_DIR/$VECTR_BACKUP_INSTANCE_DIR.zip" )
+        fi
+    fi
+
+    # -------------------------------------------------------------------------------------------
+    # Step 29: Edit /etc/hosts to add hostname and 127.0.0.1 if doesn't exist
     # -------------------------------------------------------------------------------------------
 
     local HOSTS_VECTR_HOSTNAME_EXISTS
@@ -946,7 +1012,7 @@ function deployVectr ()
     printf " VECTR local /etc/hosts hostname exists\n"
 
     # -------------------------------------------------------------------------------------------
-    # Step 28: Mark VECTR_INSTALLED_VERSION in env file supplied
+    # Step 30: Mark VECTR_INSTALLED_VERSION in env file supplied
     # -------------------------------------------------------------------------------------------
 
     local VECTR_WRITE_INSTALLED_VER=$(writeKeyValueToEnvFile "$ENV_FILE" "$VECTR_ENV_INSTALLED_VER_KEYNAME" "$VECTR_RELEASE_ZIP_NAME")
@@ -960,7 +1026,7 @@ function deployVectr ()
     chown "$RUN_USER" "$ENV_FILE"
 
     # -------------------------------------------------------------------------------------------
-    # Step 29: Restart docker containers if they were stopped
+    # Step 31: Restart docker containers if they were stopped
     # -------------------------------------------------------------------------------------------
 
     if [[ "$DOCKER_STOPPED" -eq 1 ]]; then
@@ -973,43 +1039,14 @@ function deployVectr ()
     fi
 
     # -------------------------------------------------------------------------------------------
-    # Step 30: Migrate old users if from older version
-    # -------------------------------------------------------------------------------------------
-
-    if [[ "$OLD_AUTH_WAR_EXISTS" -eq 1 ]]; then
-
-        local MIGRATE_USER_RUN
-        local PASSWORD_MIGRATION_SCRIPT_EXISTS=$(fileExists "$RUNNING_DIR/password-migration-tool.jar")
-        if [[ "$PASSWORD_MIGRATION_SCRIPT_EXISTS" -eq 1 ]]; then
-            local COPY_TOOL_RESULT=$(cp -v "$RUNNING_DIR/password-migration-tool.jar" "$VECTR_APP_DIR/tools/password-migration-tool.jar")
-            MIGRATE_USER_RUN=1
-
-            # change this sleep to wait for service up? complex check in bash...
-            sleep 30
-            # echo "calling docker exec -w $TOMCAT_CONTAINER_TOOLS_DIR $ENV_VECTR_TOMCAT_CONTAINER_NAME java -jar password-migration-tool.jar -h $ENV_VECTR_MONGO_CONTAINER_NAME -p 27017"
-            local MIGRATE_COMMAND=$(docker exec -w "$TOMCAT_CONTAINER_TOOLS_DIR" "$ENV_VECTR_TOMCAT_CONTAINER_NAME" java -jar password-migration-tool.jar -h "$ENV_VECTR_MONGO_CONTAINER_NAME" -p 27017 )
-            printStatusMark $MIGRATE_USER_RUN
-            printf " Resetting user passwords to default due to authentication change (if this fails, you won't be able to login. see documentation)\n"
-        else
-            MIGRATE_USER_RUN=0
-            printStatusMark 0
-            printf " Couldn't find password migration tool for old users, manual user migration will be required after install\n"
-        fi
-    else
-        printStatusMark 1
-        printf " No VECTR data setup tools needed - fresh installation\n"
-    fi
-
-
-    # -------------------------------------------------------------------------------------------
-    # Step 31: Output docker compose command to start running VECTR
+    # Step 32: Output docker compose command to start running VECTR
     # -------------------------------------------------------------------------------------------
 
     if [[ "$DOCKER_STOPPED" -eq 1 ]]; then
         echo ""
         echo "-------------------- UPGRADE COMPLETE -----------------------"
         echo ""
-        echo " # NOTE: VECTR will take 2-5 minutes to restart the server with the latest code. "
+        echo " # NOTE: VECTR will take 2-5 minutes to restart the server with the updated release. "
         echo " #  Once deployed you may visit https://$ENV_VECTR_HOSTNAME:$ENV_VECTR_PORT"
     else
         echo ""
