@@ -71,7 +71,7 @@ Check out our [How-to Videos](https://github.com/SecurityRiskAdvisors/VECTR/wiki
 
 ### Feature Breakdowns By Release
 
-[VECTR v5.1.3 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v5_1_3%20Feature%20Breakdown.pdf)
+[VECTR v5.2.0 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v5_2_0%20Feature%20Breakdown.pdf)
 
 ## Team
 LEAD PROGRAMMERS:
