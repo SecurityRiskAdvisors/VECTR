@@ -453,15 +453,15 @@ echo ""
 # can we switch this to a subshell call? VAR=$(vectr-deploy.sh blah)
 if [ ! -z "$RELEASE_FILE_SPECIFIED" ]; then
     if [ -z "$VECTR_CA_PASS" ]; then
-        vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME" -r "$RELEASE_FILE_SPECIFIED"
+        ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME" -r "$RELEASE_FILE_SPECIFIED"
     else
-        vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME" -r "$RELEASE_FILE_SPECIFIED" -p "$VECTR_CA_PASS"
+        ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME" -r "$RELEASE_FILE_SPECIFIED" -p "$VECTR_CA_PASS"
     fi
 else
     if [ -z "$VECTR_CA_PASS" ]; then
-        vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME"
+        ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME"
     else
-        vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME"  -p "$VECTR_CA_PASS"
+        ./vectr-deploy.sh -e "$VECTR_CONFIG_FILE_NAME"  -p "$VECTR_CA_PASS"
     fi
 fi
 
