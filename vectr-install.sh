@@ -449,6 +449,9 @@ EOF
 echo " Deploying VECTR installation according to configuration values selected ..."
 echo ""
 
+# set execute bit on vectr-deploy.sh
+chmod u+x vectr-deploy.sh
+
 # this could get complex with more options, try to find a way to avoid eval statements
 # can we switch this to a subshell call? VAR=$(vectr-deploy.sh blah)
 if [ ! -z "$RELEASE_FILE_SPECIFIED" ]; then
