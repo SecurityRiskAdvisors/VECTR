@@ -107,7 +107,7 @@ fi
 
 ## CENTOS style first, then Ubuntu/Mint
 
-RUN_USER="$(who am i | awk 'NR==1{print $1}')"
+RUN_USER="$(whoami | awk 'NR==1{print $1}')"
 if [ -z "$RUN_USER" ]; then
     RUN_USER="$(who | awk 'NR==1{print $1}')"
 fi
