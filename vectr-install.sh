@@ -116,7 +116,7 @@ if [ "$RUN_USER" == "root" ]; then
     RUN_USER="vectr"
 fi
 
-RUN_USER_HOME="~$RUN_USER"
+RUN_USER_HOME="$(eval echo "~$RUN_USER")"
 
 chown "$RUN_USER":"$RUN_USER" "$SCRIPT_LOG"
 
