@@ -1,4 +1,6 @@
-# ![VECTR](media/VECTR_logo_orange.svg)
+<p align="center">
+  <img src="media/VECTR_logo_orange.svg" width="65%" height="65%">
+</p>
 
 VECTR documentation can be found here:
 [https://docs.vectr.io](https://docs.vectr.io)
