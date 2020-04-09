@@ -1,4 +1,4 @@
-# ![VECTR](media/vectr-logo-small.png)
+# ![VECTR](media/VECTR_logo_orange.svg)
 
 VECTR documentation can be found here:
 [https://docs.vectr.io](https://docs.vectr.io)
