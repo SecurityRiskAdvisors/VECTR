@@ -22,7 +22,7 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 
 ### Feature Breakdowns By Release
 
-[VECTR v5.5 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v5_5_8%20Feature%20Breakdown.pdf)
+[VECTR v5.5.8 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v5_5_8%20Feature%20Breakdown.pdf)
 
 ## Team
 LEAD PROGRAMMERS:
@@ -38,8 +38,12 @@ PROGRAMMERS:
 DESIGN & REQUIREMENTS:
 * Phil Wainwright
 
+DEV OPS:
+* Paul Spencer
+
 GRAPHIC DESIGN & MARKETING:
 * Doug Webster
+
 
 [![Security Risk Advisors](media/SRA-logo-primary-small.png)](https://securityriskadvisors.com)
 
