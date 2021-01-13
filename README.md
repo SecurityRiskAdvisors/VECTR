@@ -22,7 +22,7 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 
 ### Feature Breakdowns By Release
 
-[VECTR v6.0.3 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v6_0_3%20Feature%20Breakdown.pdf)
+[VECTR v6.1.0 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v6_1_0%20Feature%20Breakdown.pdf)
 
 ## Team
 LEAD PROGRAMMERS:
@@ -45,7 +45,7 @@ GRAPHIC DESIGN & MARKETING:
 * Doug Webster
 
 
-[![Security Risk Advisors](media/SRA-logo-primary-small.png)](https://securityriskadvisors.com)
+[![Security Risk Advisors](media/SRA-logo-primary-small.png)](https://sra.io)
 
 ## License
 
