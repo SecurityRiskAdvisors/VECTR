@@ -28,12 +28,13 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 LEAD PROGRAMMERS:
 * Carl Vonderheid
 * Galen Fisher
+* Daniel Hong
 
 PROGRAMMERS:
-* Daniel Hong
 * Andrew Scott
 * Patrick Hislop
 * Dan Guzek
+* Zara Gunner
 * Nick Galante
 
 DESIGN & REQUIREMENTS:
