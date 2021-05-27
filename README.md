@@ -22,7 +22,7 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 
 ### Feature Breakdowns By Release
 
-[VECTR v7.0.0 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v7_0_0%20Feature%20Breakdown.pdf)
+[VECTR v6.2.2 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v6_2_2%20Feature%20Breakdown.pdf)
 
 ## Team
 LEAD PROGRAMMERS:
