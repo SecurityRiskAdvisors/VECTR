@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="media/VECTR_logo_orange.svg" width="65%" height="65%">
+  <img src="media/vectr-logo-bl.svg" width="65%" height="65%">
 </p>
 
 VECTR documentation can be found here:
