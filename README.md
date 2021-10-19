@@ -25,7 +25,7 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 
 ### Feature Breakdowns By Release
 
-[VECTR v7.1.1 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v7_1_1%20Feature%20Breakdown.pdf)
+[VECTR v8.0.0 Feature Breakdown](https://github.com/SecurityRiskAdvisors/VECTR/blob/master/media/VECTR%20v8_0_0%20Feature%20Breakdown.pdf)
 
 ## Team
 LEAD PROGRAMMERS:
@@ -45,6 +45,7 @@ DESIGN & REQUIREMENTS:
 
 DEV OPS:
 * Paul Spencer
+* Ryan Fortin
 
 GRAPHIC DESIGN & MARKETING:
 * Doug Webster
