@@ -2,6 +2,11 @@
   <img src="media/vectr-logo-bl.svg" width="65%" height="65%">
 </p>
 
+
+### :warning: **Please upgrade to 8.1.1 for CVE-2021-42228 fix**
+
+####
+
 VECTR documentation can be found here:
 [https://docs.vectr.io](https://docs.vectr.io)
 
