@@ -3,7 +3,7 @@
 </p>
 
 
-### :warning: **Please upgrade to 8.1.2 for CVE-2021-44228 fix**
+### :warning: **Please upgrade to 8.1.3 for CVE-2021-44228 and CVE-2021-45046 fixes**
 
 ####
 
