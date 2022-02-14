@@ -41,9 +41,11 @@ LEAD PROGRAMMERS:
 PROGRAMMERS:
 * Andrew Scott
 * Patrick Hislop
+* Nick Galante
 * Dan Guzek
 * Zara Gunner
-* Nick Galante
+* Noel Leahy
+* James Geraghty
 
 DESIGN & REQUIREMENTS:
 * Phil Wainwright
