@@ -3,8 +3,6 @@
 </p>
 
 
-### :warning: **Please upgrade to 8.1.4 for CVE-2021-44228, CVE-2021-45046, CVE-2021-45105 fixes**
-
 ####
 
 VECTR documentation can be found here:
