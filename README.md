@@ -35,13 +35,12 @@ LEAD PROGRAMMERS:
 * Daniel Hong
 
 PROGRAMMERS:
-* Andrew Scott
 * Patrick Hislop
 * Nick Galante
 * Dan Guzek
 * Zara Gunner
-* Noel Leahy
 * James Geraghty
+* Bhavika Patel
 
 DESIGN & REQUIREMENTS:
 * Phil Wainwright
