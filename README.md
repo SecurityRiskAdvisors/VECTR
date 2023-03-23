@@ -21,6 +21,10 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 
 # ![VECTR](media/ImportData.png)
 
+# ![VECTR](media/AdvancedTracking.png)
+
+# ![VECTR](media/AutomatedAttack.png)
+
 ## Documentation
 
 ### Feature Breakdowns By Release
