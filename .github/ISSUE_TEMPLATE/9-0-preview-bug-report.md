@@ -1,7 +1,7 @@
 ---
-name: Bug report
-about: Use this template when reporting a bug or broken functionality
-title: 'Bug: '
+name: 9.0 Preview Bug Report
+about: Use this issue when reporting issues with a 9.0 Preview Build
+title: '9.0 Preview: '
 labels: ''
 assignees: ''
 
