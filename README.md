@@ -31,11 +31,13 @@ See the [Install Guide](https://docs.vectr.io/Installation/).
 
 ### Supported Platforms
 
-* Current Ubuntu LTS Releases (18.04 - 22.04)
+#### Server Operating Systems
 
-Community support is primarily limited to Ubuntu LTS Releases. If you encounter issues feel free to open an issue on [GitHub](https://github.com/SecurityRiskAdvisors/VECTR) or join us on [Discord](https://discord.gg/VEDtmCrCpj).
+* Current Ubuntu LTS (22.04)
 
-VECTR should run in most containerization environments. If in enterprise we recommend consulting your Infrastructure/Containerization team for guidance. Or reach out directly via the [contact form](https://vectr.io/) at bottom of page for a consulting engagement.
+We limit community support to this runtime environment. If you encounter issues feel free to open an issue on [GitHub](https://github.com/SecurityRiskAdvisors/VECTR) or join us on [Discord](https://discord.gg/VEDtmCrCpj).
+
+VECTR should run in most containerization environments. If in enterprise we recommend consulting your Infrastructure/Containerization team for guidance. Or reach out directly via the [contact form](https://vectr.io/contact/) for our SaaS offerings.
 
 Please read the instructions carefully for [Upgrading a VECTR instance](https://docs.vectr.io/Upgrading-an-existing-VECTR-installation/).
 
@@ -51,23 +53,6 @@ Most modern browsers, such as Chrome, Firefox, Edge (Chromium) up to two prior r
 * Presentation layer built on Vue 3 with some legacy AngularJS components.
 * GraphQL API
 * Support for TLS endpoints (VECTR Community Edition will auto-generate an untrusted self-signed cert or can be supplied with certs).
-
-
-## Contributors
-
-* Galen Fisher
-* Ryan Fortin
-* James Geraghty
-* Zara Gunner
-* Dan Guzek
-* Patrick Hislop
-* Daniel Hong
-* Fevzi Kipici
-* Bhavika Patel
-* Paul Spencer
-* Carl Vonderheid
-* Phil Wainwright
-
 
 [![Security Risk Advisors](media/SRA-logo-primary-small.png)](https://sra.io)
 
