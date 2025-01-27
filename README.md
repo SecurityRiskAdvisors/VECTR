@@ -17,7 +17,7 @@ VECTR is focused on common indicators of attack and behaviors that may be carrie
 
 # ![VECTR Heatmap](media/VectrHeatmapSubtechniques.png)
 
-# ![Historial Trending](media/historicalTrending.png)
+# ![Resilience Trending](media/resilience-trending-heatmap.png)
 
 # ![Data Import](media/ImportData.png)
 
